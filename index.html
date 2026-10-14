@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Portal Aspirasi Astatid PPMU</title>
   <meta name="description"
     content="Formulir resmi penyampaian kendala, usulan solusi, dan evaluasi berkala untuk lembaga formal Yayasan Miftahul Ulum.">
@@ -23,12 +23,27 @@
       --surface-cream: #fafaf9;
     }
 
+    /* Anti-zoom & Mobile App Feel */
+    html, body {
+      touch-action: pan-x pan-y;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      overscroll-behavior-y: none;
+    }
+
     body,
     button,
     input,
     textarea,
     select {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* Mencegah auto-zoom iOS Safari saat fokus input/textarea (wajib min 16px di mobile) */
+    @media (max-width: 640px) {
+      input, textarea, select {
+        font-size: 16px !important;
+      }
     }
 
     .font-arabic {
@@ -458,6 +473,21 @@
       statusAlert.classList.remove('hidden');
       statusAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
+
+    // Anti-zoom: cegah gesture pinch-to-zoom (Safari/iOS)
+    document.addEventListener('gesturestart', function (e) {
+      e.preventDefault();
+    });
+
+    // Anti-zoom: cegah double-tap to zoom di mobile
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (e) {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
   </script>
 </body>
 
